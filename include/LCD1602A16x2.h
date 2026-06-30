@@ -24,30 +24,15 @@ class LCD1602A16x2
 
   bool PinStates[NUMBER_OF_PINS]{};
 
-  // Sets all pin states to false except EnPin.
-  void clearStates();
 
-  // Sets pins according PinStates array with indexing of PinOrder enum.
-  void setPins() const;
 
-  // Pulses enable pin and calls clearStates.
-  void sendAndClear();
+  void pulseEnable() const;
 
-  // Sends data defined in PinStates and resets the array.
-  void execute();
 
-  // Sets the moving direction according the ToRight value.
-  void entryModeSet(bool ToRight, bool ShiftOfEntireDisplay);
 
 public:
   LCD1602A16x2(int RS, int RW, int E, int D0,int D1,int D2,int D3, int D4, int D5, int D6, int D7);
-  void clear();
-  void returnHome();
-  void displayOn();
-  void displayOff();
-  void setCursor(uint8_t x, uint8_t y);
-  void write(uint8_t CharCode);
-  void backLight(bool enable);
+
 
 };
 
