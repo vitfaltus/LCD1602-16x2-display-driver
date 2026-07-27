@@ -58,7 +58,7 @@ class LCD1602A16x2
   void setBusPins(uint8_t data) const;
 
   // call this function only after writing rs and rw pins
-  void sendData(uint8_t data) const;
+  void sendData(uint8_t data, bool is_instruction = true) const;
 
   void safeInit() const;
 
