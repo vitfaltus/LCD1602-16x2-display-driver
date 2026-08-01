@@ -54,6 +54,15 @@ void LCD1602A16x2::returnHome() const {
 
   sendData(LCD_RETURNHOME);
 }
+
+
+void LCD1602A16x2::shiftDisplayRight() const {
+  sendData(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+}
+
+void LCD1602A16x2::shiftDisplayLeft() const {
+  sendData(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+}
 void LCD1602A16x2::write(char code) const {
 
   sendData(code, false);

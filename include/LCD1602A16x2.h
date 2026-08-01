@@ -41,6 +41,10 @@
 #define LCD_5x10DOTS 0x04
 #define LCD_5x8DOTS 0x00
 
+#define LCD_CHAR_PER_ROW 40
+#define LCD_DISPLAY_CHAR_PER_ROW 16
+#define LCD_DISPLAY_CHAR_PER_COL 2
+
 
 class LCD1602A16x2
 {
@@ -50,6 +54,11 @@ class LCD1602A16x2
   uint8_t RSPin;
 
   uint8_t BusNames[BUS_PINS];
+
+  bool Wrap;
+
+  // cursor position in  CGRAM/DDRAM (40 chars wrap)
+  uint8_t cursorPosition;
 
   void pulseEnable() const;
 
@@ -74,7 +83,12 @@ public:
   void init() const;
 
   void clearDisplay() const;
+
   void returnHome() const;
+
+  void shiftDisplayRight() const;
+
+  void shiftDisplayLeft() const;
 
   void write(char code) const;
 
