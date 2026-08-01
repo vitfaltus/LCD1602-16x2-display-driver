@@ -71,12 +71,14 @@ class LCD1602A16x2
 public:
   LCD1602A16x2(uint8_t RS, uint8_t RW, uint8_t E, uint8_t D0,uint8_t D1,uint8_t D2,uint8_t D3, uint8_t D4, uint8_t D5, uint8_t D6, uint8_t D7);
 
-  void init();
+  void init() const;
 
   void clearDisplay() const;
   void returnHome() const;
 
   void write(char code) const;
+
+  void writeString(const char *string) const ;
 
 };
 

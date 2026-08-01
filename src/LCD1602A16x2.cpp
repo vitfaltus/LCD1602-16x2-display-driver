@@ -4,7 +4,7 @@
 void LCD1602A16x2::automaticInit() const {
   delay(25);
   sendData(LCD_FUNCTIONSET | LCD_8BITMODE | LCD_2LINE | LCD_5x8DOTS);
-  sendData(LCD_DISPLAYCONTROL | LCD_DISPLAYON | LCD_CURSORON);
+  sendData(LCD_DISPLAYCONTROL | LCD_DISPLAYON);
   sendData(LCD_CLEARDISPLAY);
   sendData(LCD_ENTRYMODESET | LCD_ENTRYSHIFTDECREMENT | LCD_ENTRYLEFT);
 }
@@ -37,14 +37,13 @@ LCD1602A16x2::LCD1602A16x2(uint8_t RS, uint8_t RW, uint8_t E, uint8_t D0, uint8_
   // write mode
   digitalWrite(RWPin, LOW);
 
+  // instruction mode
   digitalWrite(RSPin, LOW);
 
   digitalWrite(EnablePin, LOW);
 
-
-
 }
-void LCD1602A16x2::init() {
+void LCD1602A16x2::init() const {
   automaticInit();
 }
 void LCD1602A16x2::clearDisplay() const {
@@ -59,7 +58,13 @@ void LCD1602A16x2::write(char code) const {
 
   sendData(code, false);
 }
-
+void LCD1602A16x2::writeString(const char *string) const {
+  if (!string) {return;}
+  while (*string != '\0') {
+    write(*string);
+    string++;
+  }
+}
 
 void LCD1602A16x2::pulseEnable() const {
   digitalWrite(EnablePin, LOW);
@@ -69,29 +74,32 @@ void LCD1602A16x2::pulseEnable() const {
   digitalWrite(EnablePin, LOW);
   delayMicroseconds(1);
 }
+
+// resets rw and rs pins to LOW (write instruction)
 void LCD1602A16x2::waitForNotBusy() const {
   for (uint8_t i = 0; i < BUS_PINS; i++) {
     pinMode(BusNames[i], INPUT);
   }
 
-
+  // set read instruction
   digitalWrite(RWPin, HIGH);
   digitalWrite(RSPin, LOW);
 
-
+  // bring enable up
   digitalWrite(EnablePin, LOW);
   delayMicroseconds(1);
   digitalWrite(EnablePin, HIGH);
 
+  // active wait with read of BF
   while (digitalRead(BusNames[7]) == HIGH) {
     delayMicroseconds(1);
     digitalWrite(EnablePin, LOW);
     delayMicroseconds(1);
     digitalWrite(EnablePin, HIGH);
-    Serial.print("Waiting for notBusy: ");
-    Serial.println(digitalRead(BusNames[7]));
   }
+
   digitalWrite(EnablePin, LOW);
+
   for (uint8_t i = 0; i < BUS_PINS; i++) {
     pinMode(BusNames[i], OUTPUT);
   }
@@ -112,7 +120,6 @@ void LCD1602A16x2::setBusPins(uint8_t data) const {
   }
 }
 
-
 void LCD1602A16x2::sendData(const uint8_t data, bool is_instruction) const {
   waitForNotBusy();
   if (is_instruction) {
@@ -126,6 +133,7 @@ void LCD1602A16x2::sendData(const uint8_t data, bool is_instruction) const {
   pulseEnable();
 }
 
+// TODO
 void LCD1602A16x2::safeInit() const {
   delay(45);
 
